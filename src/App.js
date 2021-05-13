@@ -1,23 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+import Pokemon from './components/Pokemon' 
+import Search from './components/Search'
+import getPokemonType from './services/getPokemonType'
+
+import { useEffect, useState } from 'react'
+
 
 function App() {
+
+  const [queryTerm, setQueryTerm] = useState('')
+  const [pokemons, setPokemons] = useState([])
+  
+
+  useEffect( () => {
+    if(queryTerm) {
+      getPokemonType(queryTerm).then( data => {
+        setPokemons(data.pokemon.slice(0, 15))
+      })}
+
+  }, [queryTerm])
+
+
+  const list = pokemons.map((elem) => {
+    return <Pokemon url={elem.pokemon.url} key={elem.pokemon.name} />
+  })
+      
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <Search  handleSearch={setQueryTerm}/>      
+      <div className='cards-container'>
+        {list}
+
+      </div>
+
     </div>
   );
 }
